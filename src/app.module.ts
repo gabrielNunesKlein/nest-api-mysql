@@ -5,6 +5,9 @@ import { UserModule } from './users/user.module';
 import { AuthModule } from './auth/auth.module';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { PugAdapter } from '@nestjs-modules/mailer/dist/adapters/pug.adapter';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { UserEntity } from './users/entity/user.entity';
+import { ConfigModule } from '@nestjs/config';
 //import { ThrottlerModule } from '@nestjs/throttler';
 
 @Module({
@@ -14,6 +17,17 @@ import { PugAdapter } from '@nestjs-modules/mailer/dist/adapters/pug.adapter';
       tt: 60,
       limit: 10
   }), */
+  ConfigModule.forRoot(),
+  TypeOrmModule.forRoot({
+    type: 'mysql',
+    host: String(process.env.DB_HOST),
+    port: Number(process.env.DB_HOST),
+    username: String(process.env.DB_USERNAME),
+    password: String(process.env.DB_PASSWORD),
+    database: String(process.env.DB_DATABASE),
+    entities: [UserEntity],
+    synchronize: true
+  }),
   MailerModule.forRoot({
     transport:{
       host: 'smtp.ethereal.email',
